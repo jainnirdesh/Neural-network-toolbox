@@ -1,4 +1,13 @@
+import os
+import sys
+
 import streamlit as st
+
+# Allow running this file directly (e.g. `streamlit run neuroverse/app.py`).
+if __package__ in (None, ""):
+    project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    if project_root not in sys.path:
+        sys.path.insert(0, project_root)
 
 from neuroverse.pages.about import render_about_page
 from neuroverse.pages.classification import render_classification_page
