@@ -189,9 +189,14 @@ def mark_complete(page_name: str) -> None:
     st.session_state.completed_pages.add(page_name)
 
 
+def navigate_to(page_name: str) -> None:
+    st.session_state.current_page = page_name
+    st.rerun()
+
+
 def nav_button(page_name: str, help_text: str, key: str) -> None:
     if st.button(page_name, key=key, use_container_width=True):
-        st.session_state.current_page = page_name
+        navigate_to(page_name)
     st.caption(help_text)
 
 
@@ -245,7 +250,7 @@ def render_sidebar() -> None:
 
         st.markdown("---")
         if st.button("Ask AI Mentor", use_container_width=True):
-            st.session_state.current_page = "Ask AI Mentor"
+            navigate_to("Ask AI Mentor")
 
 
 # ---------- Page Renderers ----------
@@ -274,19 +279,19 @@ def render_home() -> None:
     st.subheader("Quick Launch")
     q1, q2, q3, q4 = st.columns(4)
     if q1.button("Start Learning", use_container_width=True):
-        st.session_state.current_page = "Perceptron"
+        navigate_to("Perceptron")
     q1.caption("Binary logic and decision boundaries")
 
     if q2.button("Run RNN Demo", use_container_width=True):
-        st.session_state.current_page = "RNN Hub"
+        navigate_to("RNN Hub")
     q2.caption("Explore recurrent model demos")
 
     if q3.button("Open LSTM Lab", use_container_width=True):
-        st.session_state.current_page = "LSTM Hub"
+        navigate_to("LSTM Hub")
     q3.caption("Work with long-sequence flows")
 
     if q4.button("Explore Data", use_container_width=True):
-        st.session_state.current_page = "AI Playground"
+        navigate_to("AI Playground")
     q4.caption("Profile data and generate training code")
 
     st.subheader("Find Your Way")
@@ -294,7 +299,7 @@ def render_home() -> None:
     with c1:
         choice = st.selectbox("Jump directly to any module", ALL_PAGES, index=ALL_PAGES.index("Math Explorer"))
         if st.button("Open Selected Workspace"):
-            st.session_state.current_page = choice
+            navigate_to(choice)
     with c2:
         mode = st.radio("Experience Mode", ["Guided", "Builder", "Explorer"], horizontal=True)
         if mode == "Guided":
