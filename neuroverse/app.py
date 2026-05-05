@@ -14,6 +14,7 @@ from neuroverse.pages.classification import render_classification_page
 from neuroverse.pages.home import render_home_page
 from neuroverse.pages.image_recognition import render_image_recognition_page
 from neuroverse.pages.neural_network_visualizer import render_neural_network_visualizer_page
+from neuroverse.pages.propagation import render_propagation_page
 from neuroverse.pages.regression import render_regression_page
 from neuroverse.styles import apply_global_styles
 
@@ -24,6 +25,7 @@ PAGES = {
     "Regression": render_regression_page,
     "Image Recognition": render_image_recognition_page,
     "Neural Network Visualizer": render_neural_network_visualizer_page,
+    "Forward & Backward Propagation": render_propagation_page,
     "About": render_about_page,
 }
 
