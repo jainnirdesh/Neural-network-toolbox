@@ -156,10 +156,10 @@ def render_propagation_page():
         
         with col1:
             st.subheader("⚙️ Input Values")
-            input1 = st.slider("Input 1", -1.0, 1.0, 0.5, 0.1)
-            input2 = st.slider("Input 2", -1.0, 1.0, 0.3, 0.1)
-            target = st.slider("Target Output", 0.0, 1.0, 0.8, 0.1)
-            learning_rate = st.slider("Learning Rate", 0.001, 0.1, 0.01, 0.001)
+            input1 = st.slider("Input 1", -1.0, 1.0, 0.5, 0.1, key="demo_input1")
+            input2 = st.slider("Input 2", -1.0, 1.0, 0.3, 0.1, key="demo_input2")
+            target = st.slider("Target Output", 0.0, 1.0, 0.8, 0.1, key="demo_target")
+            learning_rate = st.slider("Learning Rate", 0.001, 0.1, 0.01, 0.001, key="demo_lr")
             
             show_gradients = st.checkbox("Show Gradient Values", value=False)
         
@@ -245,8 +245,8 @@ def render_propagation_page():
         
         with col1:
             st.subheader("⚙️ Training Parameters")
-            epochs = st.slider("Number of Epochs", 10, 500, 100, 10)
-            lr = st.slider("Learning Rate", 0.001, 0.1, 0.01, 0.001)
+            epochs = st.slider("Number of Epochs", 10, 500, 100, 10, key="train_epochs")
+            lr = st.slider("Learning Rate", 0.001, 0.1, 0.01, 0.001, key="train_lr")
             
             # Generate random training data (XOR problem)
             np.random.seed(42)
