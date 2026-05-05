@@ -37,3 +37,7 @@ def run_app() -> None:
     st.sidebar.title("NeuroVerse AI Lab")
     page = st.sidebar.radio("Navigate", list(PAGES.keys()))
     PAGES[page]()
+
+
+if __name__ == "__main__":
+    run_app()
