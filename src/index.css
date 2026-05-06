@@ -1,21 +1,32 @@
-@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;700&display=swap");
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Manrope", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
 }
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
   * {
     @apply antialiased;
   }
 
   body {
-    @apply bg-slate-100 text-slate-900;
+    @apply bg-slate-950 text-slate-100;
+    font-family: "Inter", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
     background-image:
-      radial-gradient(circle at 8% 16%, rgba(34, 211, 238, 0.18), transparent 33%),
-      radial-gradient(circle at 92% 88%, rgba(251, 191, 36, 0.14), transparent 30%);
+      radial-gradient(circle at 12% 18%, rgba(34, 211, 238, 0.16), transparent 28%),
+      radial-gradient(circle at 88% 12%, rgba(250, 204, 21, 0.16), transparent 26%),
+      linear-gradient(180deg, #07111b 0%, #0a111a 42%, #05070c 100%);
     min-height: 100vh;
+  }
+
+  ::selection {
+    background: rgba(103, 232, 249, 0.35);
+    color: #020617;
   }
 }
 
@@ -28,6 +39,6 @@
     @apply bg-transparent;
   }
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    @apply bg-neutral-800 rounded-full hover:bg-neutral-700 transition-colors;
+    @apply rounded-full bg-slate-700 transition-colors hover:bg-slate-500;
   }
 }
