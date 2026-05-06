@@ -1,0 +1,6 @@
+{
+  "name": "Neural Network Toolbox",
+  "description": "An interactive suite for neural network practicals including Perceptrons, CNNs, RNNs, OpenCV face detection, and Hopfield networks.",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": []
+}

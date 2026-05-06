@@ -1,3 +1,14 @@
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+trained_models/*.keras
+trained_models/*.h5
+trained_models/*.weights.h5
+trained_models/*.json
+trained_models/*.pkl
+trained_models/*.pickle
+*.log
 # OS
 .DS_Store
 
