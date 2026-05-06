@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, type ComponentType } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import {
   ArrowRight,
@@ -33,7 +33,7 @@ type ModuleId = 'home' | 'perceptron' | 'propagation' | 'cnn' | 'rnn' | 'opencv'
 interface NavItem {
   id: ModuleId;
   label: string;
-  icon: React.ComponentType<{ className?: string }>;
+  icon: ComponentType<{ className?: string }>;
   description: string;
 }
 
