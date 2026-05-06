@@ -14,7 +14,6 @@ trained_models/*.pickle
 
 # Node / frontend
 node_modules/
-dist/
 .vite/
 *.tsbuildinfo
 npm-debug.log*
