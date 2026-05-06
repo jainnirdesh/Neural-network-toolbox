@@ -1,17 +1,20 @@
 
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { 
-  Brain, 
-  Cpu, 
-  Image as ImageIcon, 
-  MessageSquare, 
-  User, 
-  Scan, 
-  PenTool,
+import { AnimatePresence, motion } from 'motion/react';
+import {
+  ArrowRight,
+  Brain,
+  BookOpen,
+  CheckCircle2,
+  Cpu,
+  Grid2x2,
   Home,
-  ChevronRight,
-  Sparkles
+  Image as ImageIcon,
+  Layers3,
+  MessageSquare,
+  Scan,
+  Sparkles,
+  User,
 } from 'lucide-react';
 import { cn } from './lib/utils';
 import { STUDENT_INFO } from './constants';
@@ -30,165 +33,153 @@ type ModuleId = 'home' | 'perceptron' | 'propagation' | 'cnn' | 'rnn' | 'opencv'
 interface NavItem {
   id: ModuleId;
   label: string;
-  icon: any;
+  icon: React.ComponentType<{ className?: string }>;
   description: string;
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { id: 'home', label: 'Dashboard', icon: Home, description: 'Overview and Student Info' },
-  { id: 'perceptron', label: 'Perceptron', icon: Cpu, description: 'Single & Multi-layer' },
-  { id: 'propagation', label: 'Propagation', icon: MoveRightIcon, description: 'Forward / Backward / Gradient Descent' },
-  { id: 'cnn', label: 'CNN Classifier', icon: ImageIcon, description: 'Cat vs Dog Image Recognition' },
-  { id: 'rnn', label: 'RNN (LSTM)', icon: MessageSquare, description: 'Text Sentiment Analysis' },
-  { id: 'opencv', label: 'OpenCV Detection', icon: Scan, description: 'Face Detection & Counting' },
-  { id: 'hopfield', label: 'Hopfield Network', icon: PenTool, description: 'Character Recognition' },
+  { id: 'home', label: 'Overview', icon: Home, description: 'Project hub and student profile' },
+  { id: 'perceptron', label: 'Perceptron', icon: Cpu, description: 'Linear classifiers and decision rules' },
+  { id: 'propagation', label: 'Propagation', icon: ArrowRight, description: 'Forward pass and optimization flow' },
+  { id: 'cnn', label: 'CNN Classifier', icon: ImageIcon, description: 'Visual pattern recognition lab' },
+  { id: 'rnn', label: 'RNN (LSTM)', icon: MessageSquare, description: 'Sequence modelling and sentiment' },
+  { id: 'opencv', label: 'OpenCV Detection', icon: Scan, description: 'Face detection and counting' },
+  { id: 'hopfield', label: 'Hopfield Network', icon: Brain, description: 'Associative memory and recall' },
 ];
 
-function MoveRightIcon(props: any) {
-  return (
-    <div className="flex items-center">
-      <ChevronRight {...props} />
-    </div>
-  );
-}
+const quickStats = [
+  { label: 'Modules', value: '6 practicals', icon: Grid2x2 },
+  { label: 'Mode', value: 'Interactive lab', icon: Sparkles },
+  { label: 'Status', value: 'Ready to explore', icon: CheckCircle2 },
+];
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<ModuleId>('home');
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const activeModule = NAV_ITEMS.find((i) => i.id === activeTab);
 
   return (
-    <div className="relative min-h-screen bg-slate-100 text-slate-800 font-sans selection:bg-cyan-300/40 selection:text-slate-900">
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute -top-32 left-1/2 h-80 w-80 -translate-x-1/2 rounded-full bg-cyan-300/35 blur-3xl" />
-        <div className="absolute bottom-0 right-10 h-72 w-72 rounded-full bg-amber-200/45 blur-3xl" />
-      </div>
+    <div className="relative min-h-screen overflow-hidden text-slate-100 selection:bg-cyan-300/40 selection:text-slate-950">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(250,204,21,0.16),_transparent_30%),radial-gradient(circle_at_80%_10%,_rgba(34,211,238,0.22),_transparent_28%),linear-gradient(180deg,_#061018_0%,_#0b1320_48%,_#070b12_100%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.035)_1px,transparent_1px)] bg-[size:64px_64px] opacity-30" />
+      <div className="pointer-events-none absolute left-[-8rem] top-32 h-72 w-72 rounded-full bg-cyan-400/10 blur-3xl" />
+      <div className="pointer-events-none absolute bottom-[-8rem] right-[-6rem] h-96 w-96 rounded-full bg-amber-400/10 blur-3xl" />
 
-      <div className="relative flex min-h-screen gap-2 p-2 md:h-screen md:gap-4 md:p-4">
-        {/* Sidebar */}
-        <aside 
-          className={cn(
-            "relative z-40 flex shrink-0 flex-col overflow-hidden rounded-2xl border border-slate-800/80 bg-slate-950/95 text-slate-300 shadow-2xl transition-all duration-300",
-            isSidebarOpen ? "w-72" : "w-20"
-          )}
-        >
-          <div className="flex h-20 items-center gap-3 border-b border-slate-800 px-5">
-            <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-400 to-blue-600 shadow-lg shadow-cyan-600/20">
-              <Brain className="h-5 w-5 text-white" />
+      <div className="relative mx-auto flex min-h-screen max-w-[1600px] flex-col gap-4 p-4 lg:flex-row lg:p-6">
+        <aside className="flex w-full flex-col overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950/80 shadow-2xl shadow-black/30 backdrop-blur-xl lg:w-[20rem] xl:w-[22rem]">
+          <div className="border-b border-white/10 p-5">
+            <div className="inline-flex items-center gap-3 rounded-full border border-cyan-400/20 bg-cyan-400/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-cyan-200">
+              <Brain className="h-3.5 w-3.5" />
+              Neural Network Toolbox
             </div>
-            {isSidebarOpen && (
-              <div className="flex flex-col">
-                <span className="leading-none text-lg font-black tracking-tight text-white">NEUROLAB</span>
-                <span className="mt-1 text-[9px] uppercase tracking-[0.24em] text-cyan-300/60">v1.0 toolbox</span>
-              </div>
-            )}
+            <div className="mt-5 space-y-3">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-slate-400">Academic console</p>
+              <h1 className="max-w-xs text-3xl font-black leading-none tracking-tight text-white md:text-4xl">
+                Explore every practical from one workspace.
+              </h1>
+              <p className="max-w-sm text-sm leading-6 text-slate-400">
+                A focused lab interface for perceptron models, propagation, vision, sequence learning, and memory networks.
+              </p>
+            </div>
+
+            <div className="mt-6 grid grid-cols-3 gap-2">
+              {quickStats.map((stat) => {
+                const Icon = stat.icon;
+                return (
+                  <div key={stat.label} className="rounded-2xl border border-white/8 bg-white/5 p-3">
+                    <Icon className="h-4 w-4 text-cyan-300" />
+                    <p className="mt-3 text-[10px] uppercase tracking-[0.24em] text-slate-500">{stat.label}</p>
+                    <p className="mt-1 text-xs font-semibold text-slate-100">{stat.value}</p>
+                  </div>
+                );
+              })}
+            </div>
           </div>
 
-          <nav className="custom-scrollbar flex-1 space-y-1 overflow-y-auto px-3 py-4">
-            {isSidebarOpen && <div className="px-3 py-2 text-[10px] font-black uppercase tracking-[0.2em] text-slate-600">Foundations</div>}
-            {NAV_ITEMS.slice(0, 3).map((item) => {
+          <nav className="custom-scrollbar flex-1 space-y-2 overflow-y-auto p-3">
+            {NAV_ITEMS.map((item) => {
               const Icon = item.icon;
               const isActive = activeTab === item.id;
-              
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => setActiveTab(item.id)}
-                  className={cn(
-                    "group relative flex w-full items-center rounded-xl px-3 py-2.5 transition-all duration-200",
-                    isActive 
-                      ? "bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg shadow-blue-900/40" 
-                      : "text-slate-400 hover:bg-slate-900 hover:text-slate-200"
-                  )}
-                >
-                  <Icon className={cn("h-4 w-4 flex-shrink-0", isActive && "text-white")} />
-                  {isSidebarOpen && (
-                    <div className="ml-3 flex min-w-0 flex-col items-start text-left">
-                      <span className="truncate text-xs font-bold uppercase tracking-wide">{item.label}</span>
-                    </div>
-                  )}
-                </button>
-              );
-            })}
 
-            {isSidebarOpen && <div className="px-3 py-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-600">Advanced</div>}
-            {NAV_ITEMS.slice(3).map((item) => {
-              const Icon = item.icon;
-              const isActive = activeTab === item.id;
-              
               return (
                 <button
                   key={item.id}
                   onClick={() => setActiveTab(item.id)}
                   className={cn(
-                    "group relative flex w-full items-center rounded-xl px-3 py-2.5 transition-all duration-200",
-                    isActive 
-                      ? "bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg shadow-blue-900/40" 
-                      : "text-slate-400 hover:bg-slate-900 hover:text-slate-200"
+                    'group flex w-full items-center gap-3 rounded-2xl border px-4 py-3 text-left transition-all duration-200',
+                    isActive
+                      ? 'border-cyan-300/30 bg-cyan-300/10 text-white shadow-lg shadow-cyan-900/20'
+                      : 'border-transparent bg-white/0 text-slate-400 hover:border-white/10 hover:bg-white/5 hover:text-slate-100'
                   )}
                 >
-                  <Icon className={cn("h-4 w-4 flex-shrink-0", isActive && "text-white")} />
-                  {isSidebarOpen && (
-                    <div className="ml-3 flex min-w-0 flex-col items-start text-left">
-                      <span className="truncate text-xs font-bold uppercase tracking-wide">{item.label}</span>
-                    </div>
-                  )}
+                  <span
+                    className={cn(
+                      'flex h-10 w-10 items-center justify-center rounded-xl border transition-colors',
+                      isActive ? 'border-cyan-300/30 bg-cyan-300/15 text-cyan-200' : 'border-white/10 bg-white/5 text-slate-300'
+                    )}
+                  >
+                    <Icon className="h-4.5 w-4.5" />
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate text-sm font-semibold tracking-tight">{item.label}</span>
+                    <span className="block truncate text-[11px] leading-5 text-slate-500 group-hover:text-slate-400">{item.description}</span>
+                  </span>
+                  <ArrowRight className={cn('h-4 w-4 transition-transform', isActive ? 'translate-x-0 text-cyan-300' : '-translate-x-1 text-slate-600 group-hover:translate-x-0')} />
                 </button>
               );
             })}
           </nav>
 
-          <div className="border-t border-slate-800 bg-slate-950/90 p-4">
-            {isSidebarOpen && (
-              <div className="mb-4 rounded-xl border border-slate-800 bg-slate-900/80 p-3">
-                <p className="mb-1 text-[9px] font-black uppercase tracking-[0.2em] text-slate-500">Developer</p>
-                <p className="text-xs font-bold tracking-tight text-cyan-300">{STUDENT_INFO.name}</p>
-                <p className="text-[10px] text-slate-400">Registration: {STUDENT_INFO.rollNo}</p>
+          <div className="border-t border-white/10 p-4">
+            <div className="rounded-[1.5rem] border border-white/10 bg-white/5 p-4">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-slate-500">Developer</p>
+                  <p className="mt-2 text-base font-semibold text-white">{STUDENT_INFO.name}</p>
+                  <p className="mt-1 text-sm text-slate-400">Roll no. {STUDENT_INFO.rollNo}</p>
+                </div>
+                <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-cyan-300/20 bg-cyan-300/10 text-cyan-200">
+                  <User className="h-5 w-5" />
+                </div>
               </div>
-            )}
-            <button 
-              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-              className="flex h-9 w-full items-center justify-center rounded-xl border border-slate-800 text-slate-500 transition-colors hover:bg-slate-900"
-            >
-              <ChevronRight className={cn("h-5 w-5 transition-transform", isSidebarOpen && "rotate-180")} />
-            </button>
+              <div className="mt-4 flex items-center gap-2 rounded-2xl border border-emerald-400/20 bg-emerald-400/10 px-3 py-2 text-[11px] font-medium text-emerald-200">
+                <Sparkles className="h-4 w-4" />
+                Live practical workspace ready
+              </div>
+            </div>
           </div>
         </aside>
 
-        {/* Main Content */}
-        <main className="relative flex flex-1 flex-col overflow-hidden rounded-2xl border border-slate-200/80 bg-white/80 shadow-xl backdrop-blur-md">
-          <header className="sticky top-0 z-30 flex min-h-16 items-center justify-between border-b border-slate-200/80 bg-white/70 px-4 backdrop-blur-md md:px-8">
-            <div className="min-w-0 space-y-1">
-              <h1 className="flex items-center gap-2 truncate text-sm font-black uppercase tracking-tight text-slate-800">
-                <span className="truncate">{activeModule?.label}</span>
-                <span className="rounded-full bg-cyan-50 px-2 py-0.5 text-[9px] font-black uppercase tracking-[0.2em] text-cyan-700">Interactive practical</span>
-              </h1>
-              <p className="hidden truncate text-[11px] font-medium text-slate-500 md:block">{activeModule?.description}</p>
+        <main className="relative flex min-h-[calc(100vh-2rem)] flex-1 flex-col overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950/55 shadow-2xl shadow-black/20 backdrop-blur-xl lg:min-h-[calc(100vh-3rem)]">
+          <header className="flex flex-col gap-4 border-b border-white/10 px-5 py-5 md:flex-row md:items-center md:justify-between md:px-8">
+            <div className="space-y-2">
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-slate-300">
+                <BookOpen className="h-3.5 w-3.5 text-amber-300" />
+                {activeModule?.label ?? 'Overview'}
+              </div>
+              <h2 className="text-2xl font-black tracking-tight text-white md:text-4xl">
+                {activeTab === 'home' ? 'Learning dashboard' : activeModule?.description}
+              </h2>
             </div>
-            <div className="flex items-center gap-4">
-              <div className="hidden sm:flex flex-col items-end">
-                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">NeuroLab Academic Portal</span>
-                <span className="text-[10px] font-bold uppercase tracking-widest text-cyan-700">Session 2023-24</span>
+
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[11px] font-medium text-slate-300">
+                Session 2023-24
               </div>
-              <div className="flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-slate-50 shadow-sm">
-                <User className="h-4 w-4 text-slate-400" />
-              </div>
-              <div className="hidden h-9 items-center gap-2 rounded-full border border-cyan-100 bg-cyan-50 px-3 text-[10px] font-black uppercase tracking-[0.2em] text-cyan-700 lg:flex">
-                <Sparkles className="h-3 w-3" />
-                Live Lab
+              <div className="rounded-full border border-cyan-300/20 bg-cyan-300/10 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-cyan-200">
+                Interactive lab
               </div>
             </div>
           </header>
 
-          <div className="custom-scrollbar flex-1 overflow-y-auto p-4 md:p-8">
+          <div className="custom-scrollbar flex-1 overflow-y-auto px-4 py-4 md:px-8 md:py-8">
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeTab}
-                initial={{ opacity: 0, y: 5 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -5 }}
-                transition={{ duration: 0.15 }}
-                className="mx-auto max-w-6xl"
+                initial={{ opacity: 0, y: 16, filter: 'blur(4px)' }}
+                animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                exit={{ opacity: 0, y: -10, filter: 'blur(4px)' }}
+                transition={{ duration: 0.22, ease: 'easeOut' }}
+                className="mx-auto max-w-7xl"
               >
                 {activeTab === 'home' && <Dashboard setActiveTab={setActiveTab} />}
                 {activeTab === 'perceptron' && <PerceptronModule />}
