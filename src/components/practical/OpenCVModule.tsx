@@ -17,6 +17,7 @@ export default function OpenCVModule() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [faceCount, setFaceCount] = useState<number | null>(null);
   const [faces, setFaces] = useState<{ x: number, y: number, w: number, h: number }[]>([]);
+  const [error, setError] = useState<string | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -28,17 +29,54 @@ export default function OpenCVModule() {
         setImage(ev.target?.result as string);
         setFaceCount(null);
         setFaces([]);
+        setError(null);
       };
       reader.readAsDataURL(file);
     }
   };
 
+  const detectFacesLocally = async () => {
+    if (!image || typeof window === 'undefined' || !('FaceDetector' in window)) {
+      return null;
+    }
+
+    const imgElement = new Image();
+    imgElement.src = image;
+    await new Promise((resolve, reject) => {
+      imgElement.onload = resolve;
+      imgElement.onerror = reject;
+    });
+
+    const detector = new (window as Window & { FaceDetector?: new () => { detect: (input: HTMLImageElement) => Promise<Array<{ x: number; y: number; width: number; height: number }>> } }).FaceDetector!();
+    const detections = await detector.detect(imgElement);
+
+    return detections.map((face) => ({
+      x: (face.x / imgElement.width) * 100,
+      y: (face.y / imgElement.height) * 100,
+      w: (face.width / imgElement.width) * 100,
+      h: (face.height / imgElement.height) * 100,
+    }));
+  };
+
   const processOpenCV = async () => {
     if (!image) return;
     setIsProcessing(true);
+    setError(null);
     
     try {
+      const localBoxes = await detectFacesLocally();
+      if (localBoxes) {
+        setFaceCount(localBoxes.length);
+        setFaces(localBoxes);
+        drawBoxes(localBoxes);
+        return;
+      }
+
       const ai = getAiClient();
+      if (!ai) {
+        throw new Error('Face detection requires a Gemini API key or browser FaceDetector support.');
+      }
+
       const response = await ai.models.generateContent({
         model: "gemini-3-flash-preview",
         contents: [
@@ -59,6 +97,8 @@ export default function OpenCVModule() {
     } catch (err) {
       console.error(err);
       setFaceCount(0);
+      setFaces([]);
+      setError('Face detection could not run in this browser. Add VITE_GEMINI_API_KEY or use a browser with FaceDetector support.');
     } finally {
       setIsProcessing(false);
     }
@@ -106,7 +146,7 @@ export default function OpenCVModule() {
                 </h3>
                 {image && (
                   <button 
-                    onClick={() => { setImage(null); setFaceCount(null); }}
+                    onClick={() => { setImage(null); setFaceCount(null); setFaces([]); setError(null); }}
                     className="text-[10px] font-bold text-rose-600 hover:scale-105 transition-transform"
                   >
                     Reset Frame
@@ -152,6 +192,13 @@ export default function OpenCVModule() {
                 {isProcessing ? <Loader2 className="animate-spin w-4 h-4" /> : <Activity className="w-4 h-4" />}
                 {isProcessing ? 'SCANNING FRAME...' : 'START CASCADE DETECTOR'}
               </button>
+
+              {error && (
+                <div className="flex items-start gap-3 rounded-xl border border-rose-200 bg-rose-50 p-4 text-rose-700">
+                  <AlertCircle className="mt-0.5 w-4 h-4 flex-shrink-0" />
+                  <p className="text-[11px] font-medium leading-relaxed">{error}</p>
+                </div>
+              )}
            </div>
         </div>
 
