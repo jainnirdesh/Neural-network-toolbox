@@ -5,7 +5,6 @@ import {
   BookMarked,
   Brain,
   Cpu,
-  Database,
   Layers3,
   Network,
   Scan,
