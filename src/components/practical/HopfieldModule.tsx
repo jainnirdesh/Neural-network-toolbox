@@ -17,6 +17,7 @@ export default function HopfieldModule() {
   const [isDrawing, setIsDrawing] = useState(false);
   const [result, setResult] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // We'll simulate a 10x10 grid for drawing
   const GRID_SIZE = 10;
@@ -26,27 +27,62 @@ export default function HopfieldModule() {
     newGrid[index] = grid[index] === 0 ? 1 : 0;
     setGrid(newGrid);
     setResult(null);
+    setError(null);
   };
 
   const clear = () => {
     setGrid(new Array(100).fill(0));
     setResult(null);
+    setError(null);
+  };
+
+  const recognizeLocally = () => {
+    const rowCounts = Array.from({ length: GRID_SIZE }, (_, row) =>
+      grid.slice(row * GRID_SIZE, row * GRID_SIZE + GRID_SIZE).reduce((sum, cell) => sum + cell, 0)
+    );
+    const colCounts = Array.from({ length: GRID_SIZE }, (_, col) =>
+      grid.reduce((sum, cell, index) => sum + (index % GRID_SIZE === col ? cell : 0), 0)
+    );
+
+    const middleRow = rowCounts[4] + rowCounts[5];
+    const leftCol = colCounts[0] + colCounts[1];
+    const rightCol = colCounts[4] + colCounts[5];
+
+    if (leftCol >= 6 && rightCol >= 6 && middleRow >= 4) {
+      return 'H';
+    }
+
+    const centerCol = colCounts[4] + colCounts[5];
+    const topRow = rowCounts[0] + rowCounts[1];
+    const bottomRow = rowCounts[8] + rowCounts[9];
+
+    if (centerCol >= 6 && (topRow >= 4 || bottomRow >= 4)) {
+      return 'I';
+    }
+
+    return '?';
   };
 
   const recognize = async () => {
     setIsProcessing(true);
+    setError(null);
     
-    // Create an ASCII representation of the grid for Gemini
-    let gridString = '';
-    for (let i = 0; i < 10; i++) {
-      for (let j = 0; j < 10; j++) {
-        gridString += grid[i * 10 + j] === 1 ? 'X' : '.';
-      }
-      gridString += '\n';
-    }
-
     try {
       const ai = getAiClient();
+      if (!ai) {
+        const char = recognizeLocally();
+        setResult(char === '?' ? null : char);
+        return;
+      }
+
+      const gridString = grid
+        .reduce<string[]>((rows, cell, index) => {
+          const rowIndex = Math.floor(index / GRID_SIZE);
+          rows[rowIndex] = (rows[rowIndex] || '') + (cell === 1 ? 'X' : '.');
+          return rows;
+        }, [])
+        .join('\n');
+
       const response = await ai.models.generateContent({
         model: "gemini-3-flash-preview",
         contents: [
@@ -64,6 +100,12 @@ export default function HopfieldModule() {
       setResult(char === '?' ? null : char as any);
     } catch (err) {
       console.error(err);
+      const char = recognizeLocally();
+      if (char === '?') {
+        setError('Convergence could not run with Gemini, and the local recognizer could not confidently match the pattern.');
+      } else {
+        setResult(char);
+      }
     } finally {
       setIsProcessing(false);
     }
@@ -108,10 +150,18 @@ export default function HopfieldModule() {
                  <button
                    onClick={clear}
                    className="w-12 h-12 rounded-xl border border-slate-200 text-slate-400 hover:text-rose-500 transition-all flex items-center justify-center"
+                  aria-label="Clear grid"
                  >
                     <RotateCcw className="w-4 h-4" />
                  </button>
               </div>
+
+              {error && (
+                <div className="flex items-start gap-3 rounded-xl border border-rose-200 bg-rose-50 p-4 text-rose-700">
+                  <CheckCircle2 className="mt-0.5 w-4 h-4 flex-shrink-0" />
+                  <p className="text-[11px] font-medium leading-relaxed">{error}</p>
+                </div>
+              )}
            </div>
         </div>
 
